@@ -1,14 +1,14 @@
 # importing libraries
-from re import M
-from sys import builtin_module_names
 import cv2 as cv
 
 # Read an image with cv.imread()
-my_cat = cv.imread('images/cat.jpg')
+my_cat = cv.imread('images/my_cat.jpg')
 
 # # Display image as a new window with cv.imshow(). 
 # # It requires the name of the window and the image (matrix of pixels)
-# cv.imshow('Cat', my_cat)
+# cv.imshow('My Cat', my_cat)
+# print(my_cat.shape)
+
 
 # # cv.waitKey() is a Keyboard binding function that waits for a specific delay in milliseconds for a key to be pressed
 # cv.waitKey(0)
@@ -31,7 +31,7 @@ my_cat = cv.imread('images/cat.jpg')
 
 # #--------------
 
-# race_car = cv.VideoCapture('videos/race_car.mp4')
+# race_car = cv.VideoCapture('videos/race_car_out.avi')
 
 # while True:
 #     isTrue, frame = race_car.read()
@@ -48,19 +48,20 @@ my_cat = cv.imread('images/cat.jpg')
 
 # Rescaling implies modifying hight and width. It is best practice to downscale (smaller than original). 
 
-def rescaleFrame(frame, scale=0.75):
+def rescaleFrame(frame, scale=0.5):
     width = int(frame.shape[1]*scale)
     height = int(frame.shape[0]*scale)
     dimensions = (width, height)
 
     return cv.resize(frame, dimensions, interpolation=cv.INTER_AREA)
 
-my_cat = rescaleFrame(my_cat, 0.4)
+my_cat = rescaleFrame(my_cat, 0.15)
+# cv.imshow('My Cat', my_cat)
+
 
 # cat_resized = rescaleFrame(my_cat, 0.5)
-# cv.imshow('My Cat', my_cat)
-# cv.imshow('My Cat Resized', cat_resized)
-# cv.waitKey(0)
+# # cv.imshow('My Cat Resized', cat_resized)
+# # cv.waitKey(0)
 
 
 # race_car = cv.VideoCapture('videos/race_car.mp4')
@@ -76,16 +77,16 @@ my_cat = rescaleFrame(my_cat, 0.4)
 # race_car.release()
 # cv.destroyAllWindows()
 
-#----------------
+# #----------------
 
-# Draw
+# # Draw
 
 import numpy as np
 
 # blank = np.zeros((500, 500, 3), dtype='uint8' )
 # cv.imshow('Blank', blank)
 
-# # Paint the image a certain color
+# Paint the image a certain color
 # cv.waitKey(500)
 # blank[:] = 255,0,0
 # cv.imshow('Blue', blank)
@@ -93,6 +94,7 @@ import numpy as np
 # blank[200:300, 300:400] = 0,0,255
 # cv.imshow('Red Square', blank)
 # cv.waitKey(500)
+# cv.waitKey(0)
 
 # # Draw a rectangle
 # cv.rectangle(blank, (100, 100), (300, 200), (0, 255, 255), thickness=2)
@@ -123,36 +125,136 @@ import numpy as np
 
 # Converting to Grayscale
 
-my_cat_gray = cv.cvtColor(my_cat, cv.COLOR_BGR2GRAY)
-cv.imshow('Cat', my_cat)
-cv.imshow('Cat Gray', my_cat_gray)
+# my_cat_gray = cv.cvtColor(my_cat, cv.COLOR_BGR2GRAY)
+# cv.imshow('Cat', my_cat)
+# cv.imshow('Cat Gray', my_cat_gray)
 
 # Blur
 # To remove some of the noise that exists in an image. There's a lot of blurring techniques. 
-my_cat_blur = cv.GaussianBlur(my_cat, (3, 3), cv.BORDER_DEFAULT)
-cv.imshow('Cat Blur', my_cat_blur)
-my_cat_blur_2 = cv.GaussianBlur(my_cat, (7, 7), cv.BORDER_DEFAULT)
-cv.imshow('Cat Blur 2', my_cat_blur_2)
-
-# Edge Cascade
-
-my_cat_canny = cv.Canny(my_cat, 125, 175)
-cv.imshow('My Cat Canny', my_cat_canny)
-
-my_cat_canny_blur= cv.Canny(my_cat_blur, 125, 175)
-cv.imshow('My Cat Canny Blur', my_cat_canny_blur)
+# my_cat_blur = cv.GaussianBlur(my_cat_gray, (3, 3), cv.BORDER_DEFAULT)
+# cv.imshow('Cat Blur', my_cat_blur)
+# my_cat_blur_2 = cv.GaussianBlur(my_cat, (7, 7), cv.BORDER_DEFAULT)
+# cv.imshow('Cat Blur 2', my_cat_blur_2)
 
 
-# Dilating the image
-my_cat_dilated = cv.dilate(my_cat_canny_blur, (7, 7), iterations=3)
-cv.imshow('My Cat Dilated', my_cat_dilated)
+# # Edge Cascade
 
-# Eroding the image
-my_cat_eroded= cv.erode(my_cat_canny_blur, (3, 3), iterations=1)
-cv.imshow('My Cat Eroded', my_cat_eroded)
+# my_cat_canny = cv.Canny(my_cat, 125, 175)
+# cv.imshow('My Cat Canny', my_cat_canny)
+
+# my_cat_canny_blur= cv.Canny(my_cat_blur, 125, 175)
+# cv.imshow('My Cat Canny Blur', my_cat_canny_blur)
+
+
+# # Dilating the image
+# my_cat_dilated = cv.dilate(my_cat_canny_blur, (7, 7), iterations=3)
+# cv.imshow('My Cat Dilated', my_cat_dilated)
+
+# # Eroding the image
+# my_cat_eroded= cv.erode(my_cat_canny_blur, (3, 3), iterations=1)
+# cv.imshow('My Cat Eroded', my_cat_eroded)
 
 # Cropping
-my_cat_cropped = my_cat[80:260, 90:300]
-cv.imshow('My Cat Cropped', my_cat_cropped)
+print(my_cat.shape)
+# cv.rectangle(my_cat, (200, 280), (500, 750), (0,0,255), thickness=2)
+# cv.imshow('My Cat Rectangle', my_cat)
+my_cat = my_cat[280:750, 200:500]
+cv.imshow('My Cat', my_cat)
 
-cv.waitKey(0)
+
+# Transformations
+
+# Translation: shifting an image along the x and y axis (up, down, left, right)
+
+# def translate(img, x, y):
+#     transMat = np.float32([[1, 0, x], [0, 1, y]])
+#     dimensions = (img.shape[1], img.shape[0])
+#     return cv.warpAffine(img, transMat, dimensions)
+
+# -x --> left
+# -y --> up
+# x --> right
+# y --> down
+
+# cat_translated = translate(my_cat, 100, 100)
+# cv.imshow('Cat Translated', cat_translated)
+
+
+# # Rotation
+
+# def rotate(img, angle, rotPoint=None):
+#     (height, width) = img.shape[:2]
+#     if rotPoint is None:
+#         rotPoint = (width//2, height//2)
+
+#     rotMat = cv.getRotationMatrix2D(rotPoint, angle, 1.0)
+#     dimensions = (width, height)
+
+#     return cv.warpAffine(img, rotMat, dimensions)
+
+# cat_rotated = rotate(my_cat, 45)
+# cv.imshow('Cat Rotated', cat_rotated)
+# cat_rotated = rotate(cat_rotated, 30)
+# cv.imshow('Cat Rotated +30', cat_rotated)
+
+# You can also rotate a rotated image. Be careful with black fills after multiple rotations. 
+
+# # # Resizing
+
+# # cat_resized = cv.resize(my_cat, (500, 500), interpolation=cv.INTER_CUBIC)
+# # cv.imshow('Resized Cat', cat_resized)
+
+# # # Flipping
+
+# # cat_flipped = cv.flip(my_cat, 0)
+# # cv.imshow('Flipped Cat', cat_flipped)
+# # cat_flipped_1 = cv.flip(my_cat, 1)
+# # cv.imshow('Flipped Cat 1', cat_flipped_1)
+# # cat_flipped_2 = cv.flip(my_cat, -1)
+# # cv.imshow('Flipped Cat 2', cat_flipped_2)
+
+# Cropping
+
+# cat_cropped = my_cat[100:200, 200:400]
+# cv.imshow('Cat Cropped', cat_cropped)
+
+
+# Contour Detection
+
+# Boundaries of objects. The line or curve that joins the continuous points along the boundary of an object. Mathematically they're not the same as edges. 
+
+
+# cat_gray = cv.cvtColor(my_cat, cv.COLOR_BGR2GRAY)
+# cv.imshow("Gray Cat", cat_gray)
+
+# # Blur
+# cat_blur = cv.GaussianBlur(cat_gray, (5, 5), cv.BORDER_DEFAULT)
+# cv.imshow('Blur Cat', cat_blur)
+
+# # Edges
+# cat_canny = cv.Canny(cat_blur, 125, 175)
+# cv.imshow("Canny Cat", cat_canny)
+
+# # Contours
+# contours_canny, hierarchies = cv.findContours(cat_canny, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
+
+# print(f'{len(contours_canny)} contour(s) found!')
+
+# # Threshold
+
+# ret, thresh_cat = cv.threshold(cat_gray, 125, 255, cv.THRESH_BINARY)
+# cv.imshow('Thresh Cat', thresh_cat)
+
+
+# contours_thresh, hierarchies_thresh = cv.findContours(thresh_cat, cv.RETR_LIST, cv.CHAIN_APPROX_SIMPLE)
+
+# blank_canny = np.zeros(my_cat.shape, dtype='uint8')
+# blank_thresh = np.zeros(my_cat.shape, dtype='uint8')
+
+# cv.drawContours(blank_canny, contours_canny, -1, (0,0,255), 1)
+# cv.drawContours(blank_thresh, contours_thresh, -1, (0,0,255), 1)
+
+# cv.imshow('Contours Canny', blank_canny)
+# cv.imshow('Contours Thresh', blank_thresh)
+
+# cv.waitKey(0)
